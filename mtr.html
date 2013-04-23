@@ -1,0 +1,67 @@
+<html>
+<head>
+<title>My Trace Route visualized</title>
+<script src="d3.v3.min.js" charset="utf-8"></script>
+<script src="raw-last-hour.js"></script>
+<style>
+  path {
+    stroke: orange;
+    stroke-width: 2;
+    fill: none;
+  }
+
+  line {
+    stroke: black;
+  }
+</style>
+</head>
+<body>
+</body>
+<script>
+var w = 640;
+var h = 480;
+var margin = 40;
+var transposed = [];
+var pings = [];
+var maxY = -1;
+for(i=0; i < data.length; i++) {
+  for (j=0; j < data[i].length; j++) {
+    if (transposed[j] == undefined) {
+      transposed[j] = [];
+      pings[j] = [];
+    }
+    transposed[j].push(data[i][j]);
+    pings[j].push(data[i][j].avgPing);
+    maxY = Math.max(maxY, data[i][j].avgPing);
+  }
+}
+var filter = [1, transposed.length-1]; // show only the first external hop and the last
+var y = d3.scale.linear().domain([0, maxY]).range([0 + margin, h - margin]);
+var x = d3.scale.linear().domain([0, pings.length]).range([0 + margin, w - margin]);
+
+var vis = d3.select("body").append("svg:svg").attr("width", w).attr("height", h);
+var g = vis.append("svg:g").attr("transform", "translate(0,"+h+")");
+g.append("svg:line").attr("x1", x(0)).attr("x2",x(pings.length)).attr("y1", -y(0)).attr("y2",-y(0));
+g.append("svg:line").attr("x1", x(0)).attr("x2",x(0)).attr("y1", -y(0)).attr("y2",-y(maxY));
+
+for(i=0; i < pings.length; i++) {
+  if (filter.indexOf(i) != -1) {
+    var line = d3.svg.line()
+        .x(function(d,k) { return x(k); })
+        .y(function(d) { return -1 * y(d); });
+    g.append("svg:path").attr("d", line(pings[i])).attr("class", data[data.length-1][i].hopName);
+  }
+}
+
+g.selectAll(".yLabel")
+    .data(y.ticks(10))
+    .enter().append("svg:text")
+    .attr("class", "yLabel")
+    .text(String)
+    .attr("x", 0)
+    .attr("y", function(d) { return -1 * y(d) - 10 })
+    .attr("text-anchor", "right")
+    .attr("dy", 4);
+
+</script>
+</html>
