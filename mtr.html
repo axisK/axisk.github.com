@@ -37,11 +37,11 @@ for(i=0; i < data.length; i++) {
 }
 var filter = [1, transposed.length-1]; // show only the first external hop and the last
 var y = d3.scale.linear().domain([0, maxY]).range([0 + margin, h - margin]);
-var x = d3.scale.linear().domain([0, pings.length]).range([0 + margin, w - margin]);
+var x = d3.scale.linear().domain([0, pings[0].length]).range([0 + margin, w - margin]);
 
 var vis = d3.select("body").append("svg:svg").attr("width", w).attr("height", h);
 var g = vis.append("svg:g").attr("transform", "translate(0,"+h+")");
-g.append("svg:line").attr("x1", x(0)).attr("x2",x(pings.length)).attr("y1", -y(0)).attr("y2",-y(0));
+g.append("svg:line").attr("x1", x(0)).attr("x2",x(pings[0].length)).attr("y1", -y(0)).attr("y2",-y(0));
 g.append("svg:line").attr("x1", x(0)).attr("x2",x(0)).attr("y1", -y(0)).attr("y2",-y(maxY));
 
 for(i=0; i < pings.length; i++) {
