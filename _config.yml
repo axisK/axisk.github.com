@@ -13,7 +13,7 @@ baseurl: ''
 github: ''
 
 # Set this to your UA-# value, or '' to disable the block completely
-gaaccount: '15794712-3'
+gaaccount: 'UA-15794712-3'
 
 # Set this to your disqus shortname to enable comments. Note that the 'comments'
 # setting below must also be true. Individual posts can override 'comments' to
