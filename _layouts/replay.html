@@ -1,0 +1,90 @@
+{% include header.html %}
+
+<div class="container container-left">
+    <div class="row">
+        <div class="col-md-3 hidden-xs">
+            {% include sidebar.html %}
+        </div>
+        <div class="col-md-9">
+          <div class="article">
+            <div class="well">
+                <h1><a href="{{ site.baseurl}}{{ page.url }}">{{ page.title }}</a></h1>
+            {% if site.comments == true and page.comments == true and site.disqus != '' %}
+                <p class="author"><a href="#disqus_thread">Comments</a></p>
+            {% endif %}
+            <div class="post-content">
+              {% if page.connected_viewers %}
+              <h1>Connected Viewers</h1>
+                <figure style="width: 600; height: 300px;" id="connectedViewers"></figure>
+              {% endif %}
+            {{ content }}
+            </div>
+            {% if page.comments %}
+            <div id="disqus_thread">
+                <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+                <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+            </div>
+            {% endif %}
+            </div>
+          </div>
+          <div class="pagination">
+              {% if page.next %}
+                <a class="btn btn-default" href="{{ site.baseurl}}{{ page.next.url }}" class="next">Newer Post</a>
+              {% endif %}
+              {% if page.previous %}
+                <a class="btn btn-default" href="{{ site.baseurl}}{{ page.previous.url }}" class="previous">Older Post</a>
+              {% endif %}
+          </div>
+        </div>
+    </div>
+</div>
+
+
+  {% if page.connected_viewers %}
+    <script src="/data/{{page.match_id}}_connectedViewers.js"></script>
+    <script>
+
+      connectedViewersData = [];
+      for (var i = 0; i < connectedViewers.length; i++) {
+        connectedViewersData.push({
+          "x": connectedViewers[i].r,
+          "y": connectedViewers[i].c
+        });
+      }
+      var connectedViewersXChart = {
+        "xMax": connectedViewers[connectedViewers.length-1].r,
+        "xScale": "linear",
+        "yScale": "linear",
+        "type": "line",
+        "main": [
+          {
+            "className": ".connectedViewers",
+            "data": connectedViewersData
+          }
+        ]
+      };
+      var connectedViewersOpts = {
+        "tickFormatX": function(x) {
+          var hours = Math.floor(x / 3600);
+          var minutes = Math.floor(x / 60);
+          var seconds = x % 60;
+          var result = "";
+          if (hours != 0) {
+            result += (hours < 10 ? "0" : "") + hours + ":";
+          }
+          result += (minutes < 10 ? "0" : "") + minutes + ":";
+          result += (seconds < 10 ? "0" : "") + seconds;
+          console.log(result);
+          return result;
+        }
+      }
+
+      var myChart = new xChart('bar', connectedViewersXChart, '#connectedViewers', connectedViewersOpts);
+
+
+    </script>
+  {% endif %}
+
+
+{% include disqus-comments.html %}
+{% include footer.html %}
